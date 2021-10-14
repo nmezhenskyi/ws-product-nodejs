@@ -16,6 +16,7 @@ const queryHandler = (req, res, next) => {
    }).catch(next)
 }
 
+app.set('trust proxy', true)
 app.use(cors()) // Allow cross origin requests from all origins
 app.use(rateLimiter)
 
