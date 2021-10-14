@@ -23,7 +23,6 @@ const rateLimiter = (req, res, next) => {
          if (err) throw err
 
          const currentRequestTime = moment()
-         console.log(record)
 
          // No record for current user yet:
          if (!record) {
@@ -35,7 +34,7 @@ const rateLimiter = (req, res, next) => {
 
             newRecord.push(requestLog)
             redisClient.set(req.ip, JSON.stringify(newRecord))
-            
+
             return next()
          }
 
@@ -51,7 +50,7 @@ const rateLimiter = (req, res, next) => {
 
          let totalWindowRequestsCount = requestsWithinWindow.reduce((accumulator, entry) => {
             return accumulator + entry.requestCount
-         })
+         }, 0)
 
          // Reject the request if rate limit is reached
          if (totalWindowRequestsCount >= MAX_WINDOW_REQUEST_COUNT) {
