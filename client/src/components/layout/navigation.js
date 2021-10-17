@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 
-export const Navigation = () => {
+export const Navigation = ({ bgDark }) => {
    return (
-      <nav className="navbar">
+      <nav className={`navbar ${bgDark && 'bg-dark'}`}>
          <h1>
             <Link to="/">Data Visualizer</Link>
          </h1>

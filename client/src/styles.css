@@ -1,6 +1,6 @@
 :root {
    --white: #fff;
-   --grey: a1aaab;
+   --grey: #a1aaab;
    --light-grey: #ccc;
    --light-blue: #17a2b8;
 }
@@ -43,11 +43,22 @@ img { width: 100%; }
    background-color: var(--light-grey);
 }
 
+.bg-dark {
+   background: rgb(29, 29, 29) !important;
+   opacity: 1;
+}
+
+.container {
+   max-width: 1400px;
+   margin: 0 auto;
+   overflow: hidden;
+}
+
 .navbar {
    display: flex;
    justify-content: space-between;
    align-items: center;
-   padding: 1rem 3.2rem;
+   padding: 1.5rem 4rem;
    position: fixed;
    z-index: 1;
    width: 100%;
