@@ -1,5 +1,6 @@
 :root {
    --white: #fff;
+   --black: #000;
    --grey: #a1aaab;
    --light-grey: #ccc;
    --light-blue: #17a2b8;
@@ -43,15 +44,24 @@ img { width: 100%; }
    background-color: var(--light-grey);
 }
 
+.main-heading {
+   font-size: 4.2rem;
+   line-height: 1.2;
+   margin-bottom: 2.5rem;
+   color: var(--light-blue);
+}
+
 .bg-dark {
    background: rgb(29, 29, 29) !important;
    opacity: 1;
 }
 
 .container {
-   max-width: 1400px;
-   margin: 0 auto;
+   width: 80%;
+   max-width: 1300px;
    overflow: hidden;
+   margin: 10rem auto 5rem auto;
+   color: var(--black);
 }
 
 .navbar {
@@ -117,4 +127,12 @@ img { width: 100%; }
 .landing-content p {
    font-size: 2.4rem;
    margin-bottom: 1.6rem;
+}
+
+.content-section {
+   margin-bottom: 2.5rem;
+}
+
+.content-section h2 {
+   margin-bottom: 1.4rem;
 }
