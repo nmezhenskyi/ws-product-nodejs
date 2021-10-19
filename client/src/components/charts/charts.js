@@ -10,6 +10,7 @@ import {
    Legend,
    ResponsiveContainer
 } from 'recharts'
+import dayjs from 'dayjs'
 
 export const Charts = () => {
    const [hourlyEvents, setHourlyEvents] = useState([])
@@ -20,13 +21,9 @@ export const Charts = () => {
    useEffect(() => {
       (async () => {
          getHourlyEvents()
-         const fetchedDailyEvents = await axios.get(`http://localhost:5555/events/daily`)
-         const fetchedHourlyStats = await axios.get(`http://localhost:5555/stats/hourly`)
-         const fetchedDailyStats = await axios.get(`http://localhost:5555/stats/daily`)
-
-         setDailyEvents(fetchedDailyEvents.data)
-         setHourlyStats(fetchedHourlyStats.data)
-         setDailyStats(fetchedDailyStats.data)
+         getDailyEvents()
+         getHourlyStats()
+         getDailyStats()
       })()
    }, [])
 
@@ -56,22 +53,73 @@ export const Charts = () => {
       setHourlyEvents(result)
    }
 
+   const getDailyEvents = async () => {
+      const res = await axios.get(`http://localhost:5555/events/daily`)
+      if (!res.data) return
+
+      res.data.forEach(entry => {
+         const formatted = dayjs(entry.date)
+         entry.date = formatted.format('DD/MM/YYYY')
+      })
+
+      setDailyEvents(res.data)
+   }
+
+   const getHourlyStats = async () => {
+      const res = await axios.get(`http://localhost:5555/stats/hourly`)
+      if (!res.data) return
+      setHourlyStats(res.data)
+   }
+
+   const getDailyStats = async () => {
+      const res = await axios.get(`http://localhost:5555/stats/daily`)
+      if (!res.data) return
+      setDailyStats(res.data)
+   }
+
    return (
       <section className="container">
          <h1 className="main-heading">Chart Visualizations</h1>
          <section className="content-section">
             <h2>Hourly Events</h2>
-            <div style={{ width: '100%', height: 450 }}>
+            <div className="chart-container">
                <ResponsiveContainer>
                   <LineChart data={hourlyEvents}>
                      <CartesianGrid strokeDasharray="3 3" />
                      <XAxis dataKey="hour" />
                      <YAxis dataKey="events" />
                      <Tooltip />
-                     <Legend verticalAlign="top" />
+                     <Legend wrapperStyle={{ top: 10 }} />
                      <Line name="number of events" type="monotone" dataKey="events" stroke="#8884d8" />
                   </LineChart>
                </ResponsiveContainer>
+            </div>
+         </section>
+         <section className="content-section">
+            <h2>Daily Events</h2>
+            <div className="chart-container">
+               <ResponsiveContainer>
+                  <LineChart data={dailyEvents}>
+                     <CartesianGrid strokeDasharray="3 3" />
+                     <XAxis dataKey="date" />
+                     <YAxis dataKey="events" />
+                     <Tooltip />
+                     <Legend wrapperStyle={{ top: 10 }} />
+                     <Line name="number of events" type="monotone" dataKey="events" stroke="#8884d8" />
+                  </LineChart>
+               </ResponsiveContainer>
+            </div>
+         </section>
+         <section className="content-section">
+            <h2>Hourly Stats</h2>
+            <div className="chart-container">
+               
+            </div>
+         </section>
+         <section className="content-section">
+            <h2>Daily Stats</h2>
+            <div className="chart-container">
+               
             </div>
          </section>
       </section>
