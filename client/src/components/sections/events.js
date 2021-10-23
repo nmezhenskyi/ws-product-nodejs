@@ -1,29 +1,25 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import {
-   LineChart,
-   Line,
+   ResponsiveContainer,
+   AreaChart,
+   Area,
    CartesianGrid,
    XAxis,
    YAxis,
    Tooltip,
-   Legend,
-   ResponsiveContainer
+   Legend
 } from 'recharts'
 import dayjs from 'dayjs'
 
-export const Charts = () => {
+export const Events = () => {
    const [hourlyEvents, setHourlyEvents] = useState([])
    const [dailyEvents, setDailyEvents] = useState([])
-   const [hourlyStats, setHourlyStats] = useState([])
-   const [dailyStats, setDailyStats] = useState([])
 
    useEffect(() => {
       (async () => {
          getHourlyEvents()
          getDailyEvents()
-         getHourlyStats()
-         getDailyStats()
       })()
    }, [])
 
@@ -48,7 +44,7 @@ export const Charts = () => {
          if (a.hour < b.hour) return -1
          return 0
       })
-      result = result.map(entry => ({ ...entry, hour: entry.hour + ':00' }))
+      result = result.map(entry => ({ hour: `${entry.hour}:00`, events: parseInt(entry.events) }))
 
       setHourlyEvents(result)
    }
@@ -60,38 +56,43 @@ export const Charts = () => {
       res.data.forEach(entry => {
          const formatted = dayjs(entry.date)
          entry.date = formatted.format('DD/MM/YYYY')
+         entry.events = parseInt(entry.events)
       })
 
       setDailyEvents(res.data)
    }
 
-   const getHourlyStats = async () => {
-      const res = await axios.get(`http://localhost:5555/stats/hourly`)
-      if (!res.data) return
-      setHourlyStats(res.data)
-   }
-
-   const getDailyStats = async () => {
-      const res = await axios.get(`http://localhost:5555/stats/daily`)
-      if (!res.data) return
-      setDailyStats(res.data)
-   }
-
    return (
       <section className="container">
-         <h1 className="main-heading">Chart Visualizations</h1>
+         <h1 className="main-heading">Events</h1>
          <section className="content-section">
             <h2>Hourly Events</h2>
             <div className="chart-container">
                <ResponsiveContainer>
-                  <LineChart data={hourlyEvents}>
-                     <CartesianGrid strokeDasharray="3 3" />
+                  <AreaChart
+                     data={hourlyEvents}
+                     margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                  >
+                     <defs>
+                        <linearGradient id="colorEvents" x1="0" y1="0" x2="0" y2="1">
+                           <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                           <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                        </linearGradient>
+                     </defs>
                      <XAxis dataKey="hour" />
                      <YAxis dataKey="events" />
+                     <CartesianGrid strokeDasharray="3 3" />
                      <Tooltip />
-                     <Legend wrapperStyle={{ top: 10 }} />
-                     <Line name="number of events" type="monotone" dataKey="events" stroke="#8884d8" />
-                  </LineChart>
+                     <Legend wrapperStyle={{ top: -20 }} />
+                     <Area
+                        name="number of events"
+                        type="monotone"
+                        dataKey="events"
+                        stroke="#8884d8"
+                        fillOpacity={1}
+                        fill="url(#colorEvents)"
+                     />
+                  </AreaChart>
                </ResponsiveContainer>
             </div>
          </section>
@@ -99,27 +100,31 @@ export const Charts = () => {
             <h2>Daily Events</h2>
             <div className="chart-container">
                <ResponsiveContainer>
-                  <LineChart data={dailyEvents}>
-                     <CartesianGrid strokeDasharray="3 3" />
+                  <AreaChart
+                     data={dailyEvents}
+                     margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                  >
+                     <defs>
+                        <linearGradient id="colorEvents" x1="0" y1="0" x2="0" y2="1">
+                           <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+                           <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+                        </linearGradient>
+                     </defs>
                      <XAxis dataKey="date" />
                      <YAxis dataKey="events" />
+                     <CartesianGrid strokeDasharray="3 3" />
                      <Tooltip />
-                     <Legend wrapperStyle={{ top: 10 }} />
-                     <Line name="number of events" type="monotone" dataKey="events" stroke="#8884d8" />
-                  </LineChart>
+                     <Legend wrapperStyle={{ top: -20 }} />
+                     <Area
+                        name="number of events"
+                        type="monotone"
+                        dataKey="events"
+                        stroke="#8884d8"
+                        fillOpacity={1}
+                        fill="url(#colorEvents)"
+                     />
+                  </AreaChart>
                </ResponsiveContainer>
-            </div>
-         </section>
-         <section className="content-section">
-            <h2>Hourly Stats</h2>
-            <div className="chart-container">
-               
-            </div>
-         </section>
-         <section className="content-section">
-            <h2>Daily Stats</h2>
-            <div className="chart-container">
-               
             </div>
          </section>
       </section>

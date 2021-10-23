@@ -5,8 +5,8 @@ import {
 } from 'react-router-dom'
 import { Navigation } from './components/layout/navigation'
 import { Landing } from './components/layout/landing'
-import { Charts } from './components/charts/charts'
-import { Table } from './components/table/table'
+import { Events } from './components/sections/events'
+import { Stats } from './components/sections/stats'
 import { Map } from './components/map/map'
 
 import './styles.css'
@@ -19,8 +19,8 @@ export const App = () => {
          <Navigation bgDark={location.pathname !== "/"} />
          <Switch>
             <Route exact path="/" render={() => <Landing />} />
-            <Route exact path="/charts" render={() => <Charts />} />
-            <Route exact path="/table" render={() => <Table />} />
+            <Route exact path="/events" render={() => <Events />} />
+            <Route exact path="/stats" render={() => <Stats />} />
             <Route exact path="/map" render={() => <Map />}/>
          </Switch>
       </>

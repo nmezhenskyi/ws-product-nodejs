@@ -7,8 +7,8 @@ export const Navigation = ({ bgDark }) => {
             <Link to="/">Data Visualizer</Link>
          </h1>
          <ul>
-            <li><Link to="/charts">Charts</Link></li>
-            <li><Link to="/table">Table</Link></li>
+            <li><Link to="/events">Events</Link></li>
+            <li><Link to="/stats">Stats</Link></li>
             <li><Link to="/map">Map</Link></li>
          </ul>
       </nav>

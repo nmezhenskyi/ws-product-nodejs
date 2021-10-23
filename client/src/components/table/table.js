@@ -1,3 +1,7 @@
 export const Table = () => {
-   return <div></div>
+   return (
+      <section className="container">
+         <h1 className="main-heading">Table</h1>
+      </section>
+   )
 }
