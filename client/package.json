@@ -8,15 +8,19 @@
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.23.0",
     "dayjs": "^1.10.7",
+    "leaflet": "^1.7.1",
+    "leaflet.markercluster": "^1.5.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-leaflet": "^3.2.2",
+    "react-leaflet-markercluster": "^3.0.0-rc1",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
     "recharts": "^2.1.5",
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "export NODE_OPTIONS=--openssl-legacy-provider; react-scripts start; export NODE_OPTIONS=",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
@@ -27,16 +31,9 @@
       "react-app/jest"
     ]
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ]
 }
