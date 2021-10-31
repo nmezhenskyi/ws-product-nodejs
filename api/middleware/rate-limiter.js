@@ -8,11 +8,7 @@ const {
 } = require('../common/constants')
 
 /**
- * Request middleware for rate-limiting by ip.
- * 
- * @param {*} req Express request
- * @param {*} res Express response
- * @param {*} next Next function
+ * Middleware for rate-limiting routes by ip.
  */
 const rateLimiter = (req, res, next) => {
    try {
