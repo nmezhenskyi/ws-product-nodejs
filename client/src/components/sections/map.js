@@ -10,24 +10,39 @@ import MarkerClusterGroup from 'react-leaflet-markercluster'
 import { MAP_CENTER } from '../../common/constants'
 
 export const Map = () => {
+   const [isLoading, setLoading] = useState(true)
    const [places, setPlaces] = useState([])
-   const [activePlace, setActivePlace] = useState(null)
 
    useEffect(() => {
-      (async () => getPlaces())()
+      (async () => {
+         getPlaces()
+         setLoading(false)
+      })()
    }, [])
 
    const getPlaces = async () => {
-      const res = await axios.get(`http://localhost:5555/map/events`)
-      if (!res.data) return
+      const res = await axios.get(`http://localhost:5555/events/map`)
+
+      if (!res.data) {
+         setPlaces([])
+         return
+      }
+
       setPlaces(res.data)
    }
+
+   if (isLoading) return (
+      <section className="container">
+         <h1 className="main-heading">Map</h1>
+         <h2>Loading...</h2>
+      </section>
+   )
 
    return (
       <section className="container">
          <h1 className="main-heading">Map</h1>
-         <div style={{ height: '600px', width: '100%' }}>
-            <MapContainer tap={false} style={{ height: '100%', width: '100%' }} center={MAP_CENTER} zoom={5}>
+         <div style={{ height: '600px', width: '100%', marginBottom: '3rem' }}>
+            <MapContainer tap={false} style={{ height: '100%', width: '100%', zIndex: '0' }} center={MAP_CENTER} zoom={4}>
                <TileLayer
                   attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
