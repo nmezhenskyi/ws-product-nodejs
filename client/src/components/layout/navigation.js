@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 export const Navigation = ({ bgDark }) => {
    return (
@@ -13,4 +14,8 @@ export const Navigation = ({ bgDark }) => {
          </ul>
       </nav>
    )
+}
+
+Navigation.propTypes = {
+   bgDark: PropTypes.bool
 }

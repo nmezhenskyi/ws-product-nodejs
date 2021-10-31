@@ -11,21 +11,34 @@ import {
    Legend
 } from 'recharts'
 import dayjs from 'dayjs'
+import { Table } from '../common/table'
+import { SearchBar } from '../common/search-bar'
 
 export const Events = () => {
+   const [isLoading, setLoading] = useState(true)
    const [hourlyEvents, setHourlyEvents] = useState([])
    const [dailyEvents, setDailyEvents] = useState([])
+   const [eventsPerLocation, setEventsPerLocation] = useState([])
+   const [tableQuery, setTableQuery] = useState('')
 
    useEffect(() => {
       (async () => {
-         getHourlyEvents()
-         getDailyEvents()
+         if (isLoading) {
+            getHourlyEvents()
+            getDailyEvents()
+         }
+         getEventsPerLocation(tableQuery)
+         setLoading(false)
       })()
-   }, [])
+   }, [tableQuery, isLoading])
 
    const getHourlyEvents = async () => {
       const res = await axios.get(`http://localhost:5555/events/hourly`)
-      if (!res.data) return
+
+      if (!res.data || res.data.length === 0) {
+         setHourlyEvents([])
+         return
+      }
 
       const eventsByHour = new Map()
       res.data.forEach(entry => {
@@ -51,7 +64,11 @@ export const Events = () => {
 
    const getDailyEvents = async () => {
       const res = await axios.get(`http://localhost:5555/events/daily`)
-      if (!res.data) return
+
+      if (!res.data || res.data.length === 0) {
+         setDailyEvents([])
+         return
+      }
 
       res.data.forEach(entry => {
          const formatted = dayjs(entry.date)
@@ -61,6 +78,30 @@ export const Events = () => {
 
       setDailyEvents(res.data)
    }
+
+   const getEventsPerLocation = async (locationName) => {
+      const res = await axios.get(`http://localhost:5555/events/daily?withPlaces=true&name=${locationName}`)
+
+      if (!res.data || res.data.length === 0) {
+         setEventsPerLocation([])
+         return
+      }
+
+      res.data.forEach(entry => {
+         const formatted = dayjs(entry.date)
+         entry.date = formatted.format('DD/MM/YYYY')
+         entry.events = parseInt(entry.events)
+      })
+
+      setEventsPerLocation(res.data)
+   }
+
+   if (isLoading) return (
+      <section className="container">
+         <h1 className="main-heading">Stats</h1>
+         <h2>Loading...</h2>
+      </section>
+   )
 
    return (
       <section className="container">
@@ -126,6 +167,17 @@ export const Events = () => {
                   </AreaChart>
                </ResponsiveContainer>
             </div>
+         </section>
+         <section className="content-section">
+            <h2>Find Daily Events</h2>
+            <SearchBar
+               getQuery={q => setTableQuery(q)}
+               placeholder="Search by location"
+            />
+            <Table data={{
+               cols: ['date', 'location', 'events'],
+               rows: eventsPerLocation
+            }} />
          </section>
       </section>
    )
