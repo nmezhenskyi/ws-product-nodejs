@@ -13,7 +13,7 @@ app.use(cors())
 //app.use(rateLimiter)
 
 app.get('/', (req, res) => {
-   res.send('Work Sample for EQ Works by nmezhenskyi')
+   res.send('Work Sample for EQ Works by Nikita Mezhenskyi')
 })
 
 app.get('/events/hourly', (req, res, next) => {
@@ -28,13 +28,16 @@ app.get('/events/hourly', (req, res, next) => {
 
 app.get('/events/daily', (req, res, next) => {
    if (req.query.withPlaces && req.query.withPlaces === 'true') {
+      const name = req.query.name || null
+
       req.sqlQuery = `
          SELECT date, name, SUM(events) AS events
          FROM public.hourly_events
             LEFT JOIN public.poi ON public.hourly_events.poi_id = public.poi.poi_id
+         WHERE name ILIKE '%${name || ''}%'
          GROUP BY date, name
-         ORDER BY date
-         LIMIT 7;
+         ORDER BY date DESC
+         LIMIT 10;
       `
    }
    else {
@@ -74,6 +77,8 @@ app.get('/stats/hourly', (req, res, next) => {
 
 app.get('/stats/daily', (req, res, next) => {
    if (req.query.withPlaces && req.query.withPlaces === 'true') {
+      const name = req.query.name || null
+
       req.sqlQuery = `
          SELECT date, name,
             SUM(impressions) AS impressions,
@@ -81,9 +86,10 @@ app.get('/stats/daily', (req, res, next) => {
             SUM(revenue) AS revenue
          FROM public.hourly_stats
             LEFT JOIN public.poi ON public.hourly_stats.poi_id = public.poi.poi_id
+         WHERE name ILIKE '%${name || ''}%'
          GROUP BY date, name
-         ORDER BY date
-         LIMIT 7
+         ORDER BY date DESC
+         LIMIT 10;
       `
    }
    else {
