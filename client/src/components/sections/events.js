@@ -22,6 +22,7 @@ export const Events = () => {
    const [tableQuery, setTableQuery] = useState('')
 
    useEffect(() => {
+      console.log(process.env.REACT_APP_API_URL)
       (async () => {
          if (isLoading) {
             getHourlyEvents()
