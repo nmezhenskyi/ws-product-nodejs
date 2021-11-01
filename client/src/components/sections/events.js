@@ -33,7 +33,7 @@ export const Events = () => {
    }, [tableQuery, isLoading])
 
    const getHourlyEvents = async () => {
-      const res = await axios.get(`http://localhost:5555/events/hourly`)
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/hourly`)
 
       if (!res.data || res.data.length === 0) {
          setHourlyEvents([])
@@ -63,7 +63,7 @@ export const Events = () => {
    }
 
    const getDailyEvents = async () => {
-      const res = await axios.get(`http://localhost:5555/events/daily`)
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily`)
 
       if (!res.data || res.data.length === 0) {
          setDailyEvents([])
@@ -80,7 +80,7 @@ export const Events = () => {
    }
 
    const getEventsPerLocation = async (locationName) => {
-      const res = await axios.get(`http://localhost:5555/events/daily?withPlaces=true&name=${locationName}`)
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily?withPlaces=true&name=${locationName}`)
 
       if (!res.data || res.data.length === 0) {
          setEventsPerLocation([])

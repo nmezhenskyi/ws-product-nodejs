@@ -33,7 +33,7 @@ export const Stats = () => {
    }, [tableQuery, isLoading])
 
    const getHourlyStats = async () => {
-      const res = await axios.get(`http://localhost:5555/stats/hourly`)
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/hourly`)
       
       if (!res.data || res.data.length === 0) {
          setHourlyStats([])
@@ -77,7 +77,7 @@ export const Stats = () => {
    }
 
    const getDailyStats = async () => {
-      const res = await axios.get(`http://localhost:5555/stats/daily`)
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/daily`)
 
       if (!res.data || res.data.length === 0) {
          setDailyStats([])
@@ -96,7 +96,7 @@ export const Stats = () => {
    }
 
    const getStatsPerLocation = async (locationName) => {
-      const res = await axios.get(`http://localhost:5555/stats/daily?withPlaces=true&name=${locationName}`)
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/daily?withPlaces=true&name=${locationName}`)
 
       if (!res.data || res.data.length === 0) {
          setStatsPerLocation([])
