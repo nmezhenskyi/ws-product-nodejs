@@ -5,7 +5,7 @@ const WINDOW_SIZE = 24
 /**
  * Maximum number of requests allowed for each user in a single window.
  */
-const MAX_WINDOW_REQUEST_COUNT = 50
+const MAX_WINDOW_REQUEST_COUNT = 75
 /**
  * Interval between windows in hours.
  */
