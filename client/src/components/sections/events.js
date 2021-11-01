@@ -140,15 +140,15 @@ export const Events = () => {
    }
 
    if (error) return (
-      <section className="container">
-         <h1 className="main-heading">Stats</h1>
+      <section className="container fvp-content">
+         <h1 className="main-heading">Events</h1>
          <h2>{error}</h2>
       </section>
    )
 
    if (isLoading) return (
       <section className="container">
-         <h1 className="main-heading">Stats</h1>
+         <h1 className="main-heading">Events</h1>
          <h2>Loading...</h2>
       </section>
    )

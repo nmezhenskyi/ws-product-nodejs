@@ -42,8 +42,8 @@ export const Map = () => {
    }
 
    if (error) return (
-      <section className="container">
-         <h1 className="main-heading">Stats</h1>
+      <section className="container fvp-content">
+         <h1 className="main-heading">Map</h1>
          <h2>{error}</h2>
       </section>
    )

@@ -143,7 +143,7 @@ export const Stats = () => {
    }
 
    if (error) return (
-      <section className="container">
+      <section className="container fvp-content">
          <h1 className="main-heading">Stats</h1>
          <h2>{error}</h2>
       </section>
