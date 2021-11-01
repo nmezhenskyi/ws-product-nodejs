@@ -16,6 +16,7 @@ import { SearchBar } from '../common/search-bar'
 
 export const Events = () => {
    const [isLoading, setLoading] = useState(true)
+   const [error, setError] = useState(null)
    const [hourlyEvents, setHourlyEvents] = useState([])
    const [dailyEvents, setDailyEvents] = useState([])
    const [eventsPerLocation, setEventsPerLocation] = useState([])
@@ -34,72 +35,121 @@ export const Events = () => {
    }, [tableQuery, isLoading])
 
    const getHourlyEvents = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/hourly`)
+      try {
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/hourly`)
 
-      if (!res.data || res.data.length === 0) {
-         setHourlyEvents([])
-         return
+         if (res.status === 429) {
+            setError(res.data)
+            return
+         }
+
+         if (!res.data || res.data.length === 0) {
+            setHourlyEvents([])
+            return
+         }
+
+         const eventsByHour = new Map()
+         res.data.forEach(entry => {
+            if (eventsByHour.has(entry.hour))
+               eventsByHour.set(entry.hour, eventsByHour.get(entry.hour) + entry.events)
+            else
+               eventsByHour.set(entry.hour, entry.events)
+         })
+
+         let result = []
+         eventsByHour.forEach((val, key) => {
+            result.push({ hour: key, events: val })
+         })
+         result.sort((a, b) => {
+            if (a.hour > b.hour) return 1
+            if (a.hour < b.hour) return -1
+            return 0
+         })
+         result = result.map(entry => ({ hour: `${entry.hour}:00`, events: parseInt(entry.events) }))
+
+         setHourlyEvents(result)
       }
-
-      const eventsByHour = new Map()
-      res.data.forEach(entry => {
-         if (eventsByHour.has(entry.hour))
-            eventsByHour.set(entry.hour, eventsByHour.get(entry.hour) + entry.events)
-         else
-            eventsByHour.set(entry.hour, entry.events)
-      })
-
-      let result = []
-      eventsByHour.forEach((val, key) => {
-         result.push({ hour: key, events: val })
-      })
-      result.sort((a, b) => {
-         if (a.hour > b.hour) return 1
-         if (a.hour < b.hour) return -1
-         return 0
-      })
-      result = result.map(entry => ({ hour: `${entry.hour}:00`, events: parseInt(entry.events) }))
-
-      setHourlyEvents(result)
+      catch (err) {
+         console.error(err)
+         setHourlyEvents([])
+         if (err.response.status === 429) {
+            setError(err.response.data.error)
+         }
+      }
    }
 
    const getDailyEvents = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily`)
+      try {
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily`)
 
-      if (!res.data || res.data.length === 0) {
-         setDailyEvents([])
-         return
+         if (res.status === 429) {
+            setError(res.data)
+            return
+         }
+
+         if (!res.data || res.data.length === 0) {
+            setDailyEvents([])
+            return
+         }
+
+         res.data.forEach(entry => {
+            const formatted = dayjs(entry.date)
+            entry.date = formatted.format('DD/MM/YYYY')
+            entry.events = parseInt(entry.events)
+         })
+
+         setDailyEvents(res.data)
       }
-
-      res.data.forEach(entry => {
-         const formatted = dayjs(entry.date)
-         entry.date = formatted.format('DD/MM/YYYY')
-         entry.events = parseInt(entry.events)
-      })
-
-      setDailyEvents(res.data)
+      catch (err) {
+         console.error(err)
+         setDailyEvents([])
+         if (err.response.status === 429) {
+            setError(err.response.data.error)
+         }
+      }
    }
 
    const getEventsPerLocation = async (locationName) => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily?withPlaces=true&name=${locationName}`)
+      try {
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily?withPlaces=true&name=${locationName}`)
 
-      if (!res.data || res.data.length === 0) {
-         setEventsPerLocation([])
-         return
+         if (res.status === 429) {
+            setError(res.data)
+            return
+         }
+
+         if (!res.data || res.data.length === 0) {
+            setEventsPerLocation([])
+            return
+         }
+
+         res.data.forEach(entry => {
+            const formatted = dayjs(entry.date)
+            entry.date = formatted.format('DD/MM/YYYY')
+            entry.events = parseInt(entry.events)
+         })
+
+         setEventsPerLocation(res.data)
       }
-
-      res.data.forEach(entry => {
-         const formatted = dayjs(entry.date)
-         entry.date = formatted.format('DD/MM/YYYY')
-         entry.events = parseInt(entry.events)
-      })
-
-      setEventsPerLocation(res.data)
+      catch (err) {
+         console.error(err)
+         setEventsPerLocation([])
+         if (err.response.status === 429) {
+            setError(err.response.data.error)
+         }
+      }
    }
+
+   if (error) return (
+      <section className="container fvp-content">
+         <h1 className="main-heading">Events</h1>
+         <h2>{error}</h2>
+      </section>
+   )
 
    if (isLoading) return (
       <section className="container">
-         <h1 className="main-heading">Stats</h1>
+         <h1 className="main-heading">Events</h1>
          <h2>Loading...</h2>
       </section>
    )

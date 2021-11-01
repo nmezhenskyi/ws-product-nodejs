@@ -16,7 +16,7 @@ export const App = () => {
    const location = useLocation()
 
    return (
-      <>
+      <div className="full-view-port">
          <Navigation bgDark={location.pathname !== '/'} />
          <Switch>
             <Route exact path="/" render={() => <Landing />} />
@@ -25,6 +25,6 @@ export const App = () => {
             <Route exact path="/map" render={() => <Map />}/>
          </Switch>
          {location.pathname !== '/' && <Footer />}
-      </>
+      </div>
    )
 }

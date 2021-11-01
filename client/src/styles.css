@@ -46,6 +46,16 @@ img { width: 100%; }
    background-color: var(--light-grey);
 }
 
+.full-view-port {
+   display: flex;
+   min-height: 100vh;
+   flex-direction: column;
+}
+
+.fvp-content {
+   flex: 1;
+}
+
 .mb-1 {
    margin-bottom: 1rem;
 }
