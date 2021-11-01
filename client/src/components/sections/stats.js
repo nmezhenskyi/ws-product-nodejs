@@ -16,6 +16,7 @@ import { SearchBar } from '../common/search-bar'
 
 export const Stats = () => {
    const [isLoading, setLoading] = useState(true)
+   const [error, setError] = useState(null)
    const [hourlyStats, setHourlyStats] = useState([])
    const [dailyStats, setDailyStats] = useState([])
    const [statsPerLocation, setStatsPerLocation] = useState([])
@@ -35,7 +36,7 @@ export const Stats = () => {
    const getHourlyStats = async () => {
       try {
          const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/hourly`)
-         
+
          if (!res.data || res.data.length === 0) {
             setHourlyStats([])
             return
@@ -79,6 +80,9 @@ export const Stats = () => {
       catch (err) {
          console.error(err)
          setHourlyStats([])
+         if (err.response.status === 429) {
+            setError(err.response.data.error)
+         }
       }
    }
 
@@ -104,6 +108,9 @@ export const Stats = () => {
       catch (err) {
          console.error(err)
          setDailyStats([])
+         if (err.response.status === 429) {
+            setError(err.response.data.error)
+         }
       }
    }
 
@@ -129,8 +136,18 @@ export const Stats = () => {
       catch (err) {
          console.error(err)
          setStatsPerLocation([])
+         if (err.response.status === 429) {
+            setError(err.response.data.error)
+         }
       }
    }
+
+   if (error) return (
+      <section className="container">
+         <h1 className="main-heading">Stats</h1>
+         <h2>{error}</h2>
+      </section>
+   )
 
    if (isLoading) return (
       <section className="container">

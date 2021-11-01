@@ -16,6 +16,7 @@ import { SearchBar } from '../common/search-bar'
 
 export const Events = () => {
    const [isLoading, setLoading] = useState(true)
+   const [error, setError] = useState(null)
    const [hourlyEvents, setHourlyEvents] = useState([])
    const [dailyEvents, setDailyEvents] = useState([])
    const [eventsPerLocation, setEventsPerLocation] = useState([])
@@ -35,6 +36,11 @@ export const Events = () => {
    const getHourlyEvents = async () => {
       try {
          const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/hourly`)
+
+         if (res.status === 429) {
+            setError(res.data)
+            return
+         }
 
          if (!res.data || res.data.length === 0) {
             setHourlyEvents([])
@@ -65,12 +71,20 @@ export const Events = () => {
       catch (err) {
          console.error(err)
          setHourlyEvents([])
+         if (err.response.status === 429) {
+            setError(err.response.data.error)
+         }
       }
    }
 
    const getDailyEvents = async () => {
       try {
          const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily`)
+
+         if (res.status === 429) {
+            setError(res.data)
+            return
+         }
 
          if (!res.data || res.data.length === 0) {
             setDailyEvents([])
@@ -88,12 +102,20 @@ export const Events = () => {
       catch (err) {
          console.error(err)
          setDailyEvents([])
+         if (err.response.status === 429) {
+            setError(err.response.data.error)
+         }
       }
    }
 
    const getEventsPerLocation = async (locationName) => {
       try {
          const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily?withPlaces=true&name=${locationName}`)
+
+         if (res.status === 429) {
+            setError(res.data)
+            return
+         }
 
          if (!res.data || res.data.length === 0) {
             setEventsPerLocation([])
@@ -111,8 +133,18 @@ export const Events = () => {
       catch (err) {
          console.error(err)
          setEventsPerLocation([])
+         if (err.response.status === 429) {
+            setError(err.response.data.error)
+         }
       }
    }
+
+   if (error) return (
+      <section className="container">
+         <h1 className="main-heading">Stats</h1>
+         <h2>{error}</h2>
+      </section>
+   )
 
    if (isLoading) return (
       <section className="container">
