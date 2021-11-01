@@ -33,85 +33,103 @@ export const Stats = () => {
    }, [tableQuery, isLoading])
 
    const getHourlyStats = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/hourly`)
-      
-      if (!res.data || res.data.length === 0) {
-         setHourlyStats([])
-         return
+      try {
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/hourly`)
+         
+         if (!res.data || res.data.length === 0) {
+            setHourlyStats([])
+            return
+         }
+
+         const statsByHour = new Map()
+         res.data.forEach(entry => {
+            if (statsByHour.has(entry.hour)) {
+               let record = statsByHour.get(entry.hour)
+               statsByHour.set(entry.hour, {
+                  hour: parseInt(record.hour),
+                  impressions: parseInt(record.impressions) + parseInt(entry.impressions),
+                  clicks: parseInt(record.clicks) + parseInt(entry.clicks),
+                  revenue: parseFloat(record.revenue) + parseFloat(entry.revenue)
+               })
+            }
+            else {
+               statsByHour.set(entry.hour, {
+                  hour: parseInt(entry.hour),
+                  impressions: parseInt(entry.impressions),
+                  clicks: parseInt(entry.clicks),
+                  revenue: parseFloat(entry.revenue)
+               })
+            }
+         })
+         let result = []
+         statsByHour.forEach(val => result.push(val))
+         result.sort((a, b) => {
+            if (a.hour < b.hour) return 1
+            if (a.hour < b.hour) return -1
+            return 0
+         })
+         result = result.map(entry => ({
+            ...entry,
+            hour: `${entry.hour}:00`,
+            revenue: parseFloat(parseFloat(entry.revenue).toFixed(2))
+         }))
+
+         setHourlyStats(result)
       }
-
-      const statsByHour = new Map()
-      res.data.forEach(entry => {
-         if (statsByHour.has(entry.hour)) {
-            let record = statsByHour.get(entry.hour)
-            statsByHour.set(entry.hour, {
-               hour: parseInt(record.hour),
-               impressions: parseInt(record.impressions) + parseInt(entry.impressions),
-               clicks: parseInt(record.clicks) + parseInt(entry.clicks),
-               revenue: parseFloat(record.revenue) + parseFloat(entry.revenue)
-            })
-         }
-         else {
-            statsByHour.set(entry.hour, {
-               hour: parseInt(entry.hour),
-               impressions: parseInt(entry.impressions),
-               clicks: parseInt(entry.clicks),
-               revenue: parseFloat(entry.revenue)
-            })
-         }
-      })
-      let result = []
-      statsByHour.forEach(val => result.push(val))
-      result.sort((a, b) => {
-         if (a.hour < b.hour) return 1
-         if (a.hour < b.hour) return -1
-         return 0
-      })
-      result = result.map(entry => ({
-         ...entry,
-         hour: `${entry.hour}:00`,
-         revenue: parseFloat(parseFloat(entry.revenue).toFixed(2))
-      }))
-
-      setHourlyStats(result)
+      catch (err) {
+         console.error(err)
+         setHourlyStats([])
+      }
    }
 
    const getDailyStats = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/daily`)
+      try {
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/daily`)
 
-      if (!res.data || res.data.length === 0) {
-         setDailyStats([])
-         return
+         if (!res.data || res.data.length === 0) {
+            setDailyStats([])
+            return
+         }
+
+         res.data.forEach(entry => {
+            const formatted = dayjs(entry.date)
+            entry.date = formatted.format('DD/MM/YYYY')
+            entry.impressions = parseInt(entry.impressions)
+            entry.clicks = parseInt(entry.clicks)
+            entry.revenue = parseFloat(parseFloat(entry.revenue).toFixed(2))
+         })
+
+         setDailyStats(res.data)
       }
-
-      res.data.forEach(entry => {
-         const formatted = dayjs(entry.date)
-         entry.date = formatted.format('DD/MM/YYYY')
-         entry.impressions = parseInt(entry.impressions)
-         entry.clicks = parseInt(entry.clicks)
-         entry.revenue = parseFloat(parseFloat(entry.revenue).toFixed(2))
-      })
-
-      setDailyStats(res.data)
+      catch (err) {
+         console.error(err)
+         setDailyStats([])
+      }
    }
 
    const getStatsPerLocation = async (locationName) => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/daily?withPlaces=true&name=${locationName}`)
+      try {
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/daily?withPlaces=true&name=${locationName}`)
 
-      if (!res.data || res.data.length === 0) {
-         setStatsPerLocation([])
-         return
+         if (!res.data || res.data.length === 0) {
+            setStatsPerLocation([])
+            return
+         }
+
+         res.data.forEach(entry => {
+            const formatted = dayjs(entry.date)
+            entry.date = formatted.format('DD/MM/YYYY')
+            entry.impressions = parseInt(entry.impressions)
+            entry.clicks = parseInt(entry.clicks)
+            entry.revenue = parseFloat(parseFloat(entry.revenue).toFixed(2))
+         })
+
+         setStatsPerLocation(res.data)
       }
-
-      res.data.forEach(entry => {
-         const formatted = dayjs(entry.date)
-         entry.date = formatted.format('DD/MM/YYYY')
-         entry.impressions = parseInt(entry.impressions)
-         entry.clicks = parseInt(entry.clicks)
-         entry.revenue = parseFloat(parseFloat(entry.revenue).toFixed(2))
-      })
-
-      setStatsPerLocation(res.data)
+      catch (err) {
+         console.error(err)
+         setStatsPerLocation([])
+      }
    }
 
    if (isLoading) return (

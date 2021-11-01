@@ -21,14 +21,20 @@ export const Map = () => {
    }, [])
 
    const getPlaces = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/map`)
+      try {
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/map`)
 
-      if (!res.data) {
-         setPlaces([])
-         return
+         if (!res.data) {
+            setPlaces([])
+            return
+         }
+
+         setPlaces(res.data)
       }
-
-      setPlaces(res.data)
+      catch (err) {
+         console.error(err)
+         setPlaces([])
+      }
    }
 
    if (isLoading) return (

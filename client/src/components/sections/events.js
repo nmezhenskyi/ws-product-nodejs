@@ -22,7 +22,6 @@ export const Events = () => {
    const [tableQuery, setTableQuery] = useState('')
 
    useEffect(() => {
-      console.log(process.env.REACT_APP_API_URL)
       (async () => {
          if (isLoading) {
             getHourlyEvents()
@@ -34,67 +33,85 @@ export const Events = () => {
    }, [tableQuery, isLoading])
 
    const getHourlyEvents = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/hourly`)
+      try {
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/hourly`)
 
-      if (!res.data || res.data.length === 0) {
-         setHourlyEvents([])
-         return
+         if (!res.data || res.data.length === 0) {
+            setHourlyEvents([])
+            return
+         }
+
+         const eventsByHour = new Map()
+         res.data.forEach(entry => {
+            if (eventsByHour.has(entry.hour))
+               eventsByHour.set(entry.hour, eventsByHour.get(entry.hour) + entry.events)
+            else
+               eventsByHour.set(entry.hour, entry.events)
+         })
+
+         let result = []
+         eventsByHour.forEach((val, key) => {
+            result.push({ hour: key, events: val })
+         })
+         result.sort((a, b) => {
+            if (a.hour > b.hour) return 1
+            if (a.hour < b.hour) return -1
+            return 0
+         })
+         result = result.map(entry => ({ hour: `${entry.hour}:00`, events: parseInt(entry.events) }))
+
+         setHourlyEvents(result)
       }
-
-      const eventsByHour = new Map()
-      res.data.forEach(entry => {
-         if (eventsByHour.has(entry.hour))
-            eventsByHour.set(entry.hour, eventsByHour.get(entry.hour) + entry.events)
-         else
-            eventsByHour.set(entry.hour, entry.events)
-      })
-
-      let result = []
-      eventsByHour.forEach((val, key) => {
-         result.push({ hour: key, events: val })
-      })
-      result.sort((a, b) => {
-         if (a.hour > b.hour) return 1
-         if (a.hour < b.hour) return -1
-         return 0
-      })
-      result = result.map(entry => ({ hour: `${entry.hour}:00`, events: parseInt(entry.events) }))
-
-      setHourlyEvents(result)
+      catch (err) {
+         console.error(err)
+         setHourlyEvents([])
+      }
    }
 
    const getDailyEvents = async () => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily`)
+      try {
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily`)
 
-      if (!res.data || res.data.length === 0) {
-         setDailyEvents([])
-         return
+         if (!res.data || res.data.length === 0) {
+            setDailyEvents([])
+            return
+         }
+
+         res.data.forEach(entry => {
+            const formatted = dayjs(entry.date)
+            entry.date = formatted.format('DD/MM/YYYY')
+            entry.events = parseInt(entry.events)
+         })
+
+         setDailyEvents(res.data)
       }
-
-      res.data.forEach(entry => {
-         const formatted = dayjs(entry.date)
-         entry.date = formatted.format('DD/MM/YYYY')
-         entry.events = parseInt(entry.events)
-      })
-
-      setDailyEvents(res.data)
+      catch (err) {
+         console.error(err)
+         setDailyEvents([])
+      }
    }
 
    const getEventsPerLocation = async (locationName) => {
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily?withPlaces=true&name=${locationName}`)
+      try {
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily?withPlaces=true&name=${locationName}`)
 
-      if (!res.data || res.data.length === 0) {
-         setEventsPerLocation([])
-         return
+         if (!res.data || res.data.length === 0) {
+            setEventsPerLocation([])
+            return
+         }
+
+         res.data.forEach(entry => {
+            const formatted = dayjs(entry.date)
+            entry.date = formatted.format('DD/MM/YYYY')
+            entry.events = parseInt(entry.events)
+         })
+
+         setEventsPerLocation(res.data)
       }
-
-      res.data.forEach(entry => {
-         const formatted = dayjs(entry.date)
-         entry.date = formatted.format('DD/MM/YYYY')
-         entry.events = parseInt(entry.events)
-      })
-
-      setEventsPerLocation(res.data)
+      catch (err) {
+         console.error(err)
+         setEventsPerLocation([])
+      }
    }
 
    if (isLoading) return (
