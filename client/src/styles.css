@@ -69,7 +69,8 @@ img { width: 100%; }
    width: 80%;
    max-width: 1300px;
    overflow: hidden;
-   margin: 10rem auto 5rem auto;
+   overflow-x: scroll;
+   margin: 10rem auto 7rem auto;
    color: var(--black);
 }
 
@@ -120,6 +121,7 @@ img { width: 100%; }
    position: relative;
    background: url('./assets/earth.jpg') no-repeat center center/cover;
    height: 100vh;
+   overflow: hidden;
 }
 
 .landing-content {
@@ -132,6 +134,7 @@ img { width: 100%; }
    align-items: center;
    justify-content: center;
    text-align: center;
+   overflow: hidden;
 }
 
 .landing-content h1 {
@@ -145,7 +148,7 @@ img { width: 100%; }
    margin-bottom: 1.6rem;
 }
 
-.content-section {
+.content-section:not(:last-child) {
    margin-bottom: 3rem;
 }
 
@@ -171,6 +174,7 @@ table {
    padding: 10px;
    width: 100%;
    border-collapse: collapse;
+   overflow-x: scroll;
 }
 
 table th, table td {
@@ -228,9 +232,72 @@ table tbody tr td:last-of-type {
    border-color: var(--black);
 }
 
+.map-container {
+   height: 600px;
+   width: 100%;
+}
+
 footer {
    background:rgb(29, 29, 29);
    color: var(--white);
    text-align: center;
    padding: 2.2rem 0;
+}
+
+@media screen and (max-width: 576px) {
+   .container {
+      margin-top: 13rem;
+   }
+
+   .main-heading {
+      text-align: center;
+   }
+
+   .navbar {
+      flex-direction: column;
+      gap: 2rem;
+   }
+
+   .navbar h1 {
+      font-size: 2.6rem;
+   }
+
+   .navbar ul a {
+      font-size: 2rem;
+   }
+
+   .landing-content h1 {
+      font-size: 3.8rem;
+      margin-bottom: 2rem;
+   }
+
+   .landing-content p {
+      font-size: 2rem;
+   }
+
+   .content-section {
+      text-align: center;
+   }
+
+   .content-section h2 {
+      margin-bottom: 3rem;
+   }
+
+   .content-section h3 {
+      display: none;
+   }
+
+   .chart-container {
+      margin-top: 4rem;
+   }
+
+   .map-container {
+      height: 450px;
+   }
+}
+
+@media screen and (max-width: 350px) {
+   footer {
+      font-size: 1.4rem;
+   }
 }
