@@ -137,7 +137,7 @@ export const Stats = () => {
          console.error(err)
          setStatsPerLocation([])
          if (err.response.status === 429) {
-            setError(err.response.data.error)
+            setError(err.response.data.message)
          }
       }
    }

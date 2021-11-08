@@ -36,7 +36,7 @@ export const Map = () => {
          console.error(err)
          setPlaces([])
          if (err.response.status === 429) {
-            setError(err.response.data.error)
+            setError(err.response.data.message)
          }
       }
    }

@@ -23,7 +23,6 @@ export const Events = () => {
    const [tableQuery, setTableQuery] = useState('')
 
    useEffect(() => {
-      console.log(process.env.REACT_APP_API_URL)
       (async () => {
          if (isLoading) {
             getHourlyEvents()
@@ -135,7 +134,7 @@ export const Events = () => {
          console.error(err)
          setEventsPerLocation([])
          if (err.response.status === 429) {
-            setError(err.response.data.error)
+            setError(err.response.data.message)
          }
       }
    }
