@@ -203,7 +203,12 @@ table tbody tr {
    background-color: var(--blueish-grey);
 }
 
-table tbody tr:hover {
+table tbody tr.highlight {
+   background-color: #a8e9c3;
+}
+
+table tbody tr:hover,
+table tbody tr.highlight:hover {
    background-color: var(--dark-grey);
 }
 
