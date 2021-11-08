@@ -58,8 +58,8 @@ export const Map = () => {
    return (
       <section className="container">
          <h1 className="main-heading">Map</h1>
-         <div style={{ height: '600px', width: '100%', marginBottom: '3rem' }}>
-            <MapContainer tap={false} style={{ height: '100%', width: '100%', zIndex: '0' }} center={MAP_CENTER} zoom={4}>
+         <div className="map-container">
+            <MapContainer tap={false} style={{ height: '100%', width: '100%', zIndex: '0' }} center={MAP_CENTER} zoom={3}>
                <TileLayer
                   attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
