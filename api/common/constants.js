@@ -1,18 +1,13 @@
 /**
- * Window size for requests in hours.
+ * Window size for requests in seconds.
  */
-const WINDOW_SIZE = 24
+const WINDOW_SIZE = 59
 /**
  * Maximum number of requests allowed for each user in a single window.
  */
-const MAX_WINDOW_REQUEST_COUNT = 75
-/**
- * Interval between windows in hours.
- */
-const WINDOW_LOG_INTERVAL = 1
+const WINDOW_REQUEST_LIMIT = 20
 
 module.exports = {
    WINDOW_SIZE,
-   MAX_WINDOW_REQUEST_COUNT,
-   WINDOW_LOG_INTERVAL
+   WINDOW_REQUEST_LIMIT
 }
