@@ -7,7 +7,9 @@ const queryHandler = require('../middleware/query-handler')
 const router = new Router()
 
 router.get('/', (req, res) => {
-    res.send('Work Sample for EQ Works by Nikita Mezhenskyi')
+    return res.json({
+        message: 'Work Sample for EQ Works by Nikita Mezhenskyi'
+    })
 })
 
 router.get('/events/hourly', (req, res, next) => {
