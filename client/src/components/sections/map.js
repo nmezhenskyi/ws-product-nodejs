@@ -16,7 +16,7 @@ export const Map = () => {
 
    useEffect(() => {
       (async () => {
-         getPlaces()
+         await getPlaces()
          setLoading(false)
       })()
    }, [])
@@ -33,7 +33,6 @@ export const Map = () => {
          setPlaces(res.data)
       }
       catch (err) {
-         console.error(err)
          setPlaces([])
          if (err.response.status === 429) {
             setError(err.response.data.message)
