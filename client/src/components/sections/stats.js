@@ -24,14 +24,12 @@ export const Stats = () => {
 
    useEffect(() => {
       (async () => {
-         if (isLoading) {
-            getHourlyStats()
-            getDailyStats()
-         }
-         getStatsPerLocation(tableQuery)
+         await getHourlyStats()
+         await getDailyStats()
+         await getStatsPerLocation()
          setLoading(false)
       })()
-   }, [tableQuery, isLoading])
+   }, [])
 
    const getHourlyStats = async () => {
       try {
@@ -78,7 +76,6 @@ export const Stats = () => {
          setHourlyStats(result)
       }
       catch (err) {
-         console.error(err)
          setHourlyStats([])
          if (err.response.status === 429) {
             setError(err.response.data.error)
@@ -106,7 +103,6 @@ export const Stats = () => {
          setDailyStats(res.data)
       }
       catch (err) {
-         console.error(err)
          setDailyStats([])
          if (err.response.status === 429) {
             setError(err.response.data.error)
@@ -114,9 +110,9 @@ export const Stats = () => {
       }
    }
 
-   const getStatsPerLocation = async (locationName) => {
+   const getStatsPerLocation = async () => {
       try {
-         const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/daily?withPlaces=true&name=${locationName}`)
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/stats/daily?withPlaces=true`)
 
          if (!res.data || res.data.length === 0) {
             setStatsPerLocation([])
@@ -129,15 +125,15 @@ export const Stats = () => {
             entry.impressions = parseInt(entry.impressions)
             entry.clicks = parseInt(entry.clicks)
             entry.revenue = parseFloat(parseFloat(entry.revenue).toFixed(2))
+            entry.highlight = false
          })
 
          setStatsPerLocation(res.data)
       }
       catch (err) {
-         console.error(err)
          setStatsPerLocation([])
          if (err.response.status === 429) {
-            setError(err.response.data.error)
+            setError(err.response.data.message)
          }
       }
    }
@@ -268,9 +264,10 @@ export const Stats = () => {
                placeholder="Search by location"
             />
             <Table data={{
-               cols: ['date', 'name', 'impressions', 'clicks', 'revenue'],
+               cols: ['date', 'location', 'impressions', 'clicks', 'revenue'],
+               keys: ['date', 'name', 'impressions', 'clicks', 'revenue'],
                rows: statsPerLocation
-            }} />
+            }} query={tableQuery} searchBy='name' />
          </section>
       </section>
    )

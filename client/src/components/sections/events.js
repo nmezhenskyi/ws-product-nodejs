@@ -24,23 +24,16 @@ export const Events = () => {
 
    useEffect(() => {
       (async () => {
-         if (isLoading) {
-            getHourlyEvents()
-            getDailyEvents()
-         }
-         getEventsPerLocation(tableQuery)
+         await getHourlyEvents()
+         await getDailyEvents()
+         await getEventsPerLocation()
          setLoading(false)
       })()
-   }, [tableQuery, isLoading])
+   }, [])
 
    const getHourlyEvents = async () => {
       try {
          const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/hourly`)
-
-         if (res.status === 429) {
-            setError(res.data)
-            return
-         }
 
          if (!res.data || res.data.length === 0) {
             setHourlyEvents([])
@@ -69,7 +62,6 @@ export const Events = () => {
          setHourlyEvents(result)
       }
       catch (err) {
-         console.error(err)
          setHourlyEvents([])
          if (err.response.status === 429) {
             setError(err.response.data.error)
@@ -80,11 +72,6 @@ export const Events = () => {
    const getDailyEvents = async () => {
       try {
          const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily`)
-
-         if (res.status === 429) {
-            setError(res.data)
-            return
-         }
 
          if (!res.data || res.data.length === 0) {
             setDailyEvents([])
@@ -100,7 +87,6 @@ export const Events = () => {
          setDailyEvents(res.data)
       }
       catch (err) {
-         console.error(err)
          setDailyEvents([])
          if (err.response.status === 429) {
             setError(err.response.data.error)
@@ -108,14 +94,9 @@ export const Events = () => {
       }
    }
 
-   const getEventsPerLocation = async (locationName) => {
+   const getEventsPerLocation = async () => {
       try {
-         const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily?withPlaces=true&name=${locationName}`)
-
-         if (res.status === 429) {
-            setError(res.data)
-            return
-         }
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/daily?withPlaces=true`)
 
          if (!res.data || res.data.length === 0) {
             setEventsPerLocation([])
@@ -126,15 +107,15 @@ export const Events = () => {
             const formatted = dayjs(entry.date)
             entry.date = formatted.format('DD/MM/YYYY')
             entry.events = parseInt(entry.events)
+            entry.highlight = false
          })
 
          setEventsPerLocation(res.data)
       }
       catch (err) {
-         console.error(err)
          setEventsPerLocation([])
          if (err.response.status === 429) {
-            setError(err.response.data.error)
+            setError(err.response.data.message)
          }
       }
    }
@@ -226,8 +207,9 @@ export const Events = () => {
             />
             <Table data={{
                cols: ['date', 'location', 'events'],
+               keys: ['date', 'name', 'events'],
                rows: eventsPerLocation
-            }} />
+            }} query={tableQuery} searchBy='name' />
          </section>
       </section>
    )

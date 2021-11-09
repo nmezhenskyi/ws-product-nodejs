@@ -162,11 +162,12 @@ img { width: 100%; }
 }
 
 .popup-info h2 {
-   font-size: 18px;
+   font-size: 20px;
 }
 
 .popup-info p {
    font-size: 16px;
+   margin-bottom: 10px auto;
 }
 
 table {
@@ -203,7 +204,12 @@ table tbody tr {
    background-color: var(--blueish-grey);
 }
 
-table tbody tr:hover {
+table tbody tr.highlight {
+   background-color: #a8e9c3;
+}
+
+table tbody tr:hover,
+table tbody tr.highlight:hover {
    background-color: var(--dark-grey);
 }
 

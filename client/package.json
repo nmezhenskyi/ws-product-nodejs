@@ -16,9 +16,11 @@
     "react-leaflet": "^3.2.2",
     "react-leaflet-markercluster": "^3.0.0-rc1",
     "react-router-dom": "^5.3.0",
-    "react-scripts": "4.0.3",
     "recharts": "^2.1.5",
     "web-vitals": "^1.1.2"
+  },
+  "devDependencies": {
+    "react-scripts": "4.0.3"
   },
   "scripts": {
     "start": "export NODE_OPTIONS=--openssl-legacy-provider; react-scripts start; export NODE_OPTIONS=",
