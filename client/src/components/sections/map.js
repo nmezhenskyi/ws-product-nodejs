@@ -8,6 +8,7 @@ import {
 } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import { MAP_CENTER } from '../../common/constants'
+import { toUSD, toFormattedNumber } from '../../common/utils'
 
 export const Map = () => {
    const [isLoading, setLoading] = useState(true)
@@ -23,7 +24,7 @@ export const Map = () => {
 
    const getPlaces = async () => {
       try {
-         const res = await axios.get(`${process.env.REACT_APP_API_URL}/events/map`)
+         const res = await axios.get(`${process.env.REACT_APP_API_URL}/poi?showMetrics=true`)
 
          if (!res.data) {
             setPlaces([])
@@ -64,15 +65,18 @@ export const Map = () => {
                   url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                />
                <MarkerClusterGroup>
-                  {places.map(place => (
+                  {places.map((place, idx) => (
                      <Marker
-                        key={place.poi_id}
+                        key={idx}
                         position={[place.lat, place.lon]}
                      >
                         <Popup>
                            <div className="popup-info">
                               <h2>{place.name}</h2>
-                              <p>Past Events: {place.events}</p>
+                              <p>Past Events: {toFormattedNumber(place.events)}</p>
+                              <p>Impressions: {toFormattedNumber(place.impressions)}</p>
+                              <p>Clicks: {toFormattedNumber(place.clicks)}</p>
+                              <p>Revenue: {toUSD(place.revenue)}</p>
                            </div>
                         </Popup>
                      </Marker>
